@@ -7,7 +7,7 @@ import org.json.JSONException;
 import android.location.LocationManager;
 import android.location.Location;
 import android.location.LocationListener;
-import android.log.utils;
+import android.util.Log;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -90,7 +90,7 @@ public class GPSCheck extends CordovaPlugin {
 		try {
 		    gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		} catch(Exception ex) {
-			Log.e(TAG,"Unable to get gps status, thrown exception "+ e);
+			Log.e(TAG,"Unable to get gps status, thrown exception "+ ex);
 		}
 		return gps_enabled;
     }
@@ -102,7 +102,7 @@ public class GPSCheck extends CordovaPlugin {
 		try {
 		    network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		} catch(Exception ex) {
-			Log.e(TAG,"Unable to get network status, thrown exception "+ e);
+			Log.e(TAG,"Unable to get network status, thrown exception "+ ex);
 		}
 		return network_enabled;
     }
