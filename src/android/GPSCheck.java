@@ -1,4 +1,4 @@
-package com.datum.mfs.utils
+package com.datum.mfs.utils;
 
 import org.apache.cordova.*;
 import org.json.JSONArray;
