@@ -1,46 +1,22 @@
-# Cordova Hello World Plugin
+# Cordova plugin - MFS Utils
 
-Simple plugin that returns your string prefixed with hello.
-
-Greeting a user with "Hello, world" is something that could be done in JavaScript. This plugin provides a simple example demonstrating how Cordova plugins work.
+MFS utils
 
 ## Using
 
-Create a new Cordova Project
 
-    $ cordova create hello com.example.helloapp Hello
-    
 Install the plugin
 
-    $ cd hello
-    $ cordova plugin add https://github.com/don/cordova-plugin-hello.git
+    
+    $ cordova plugin add https://github.com/sxagan/cordova-plugin-mfsutils.git
     
 
-Edit `www/js/index.js` and add the following code inside `onDeviceReady`
+### isGPSEnabled
 
-```js
-    var success = function(message) {
-        alert(message);
-    }
+    gpscheck.isGPSEnabled(function(result){console.log("isGPSEnabled: ",result)}, function(err){console.log("isGPSEnabled err: ",err)});
+### isNetworkEnabled
 
-    var failure = function() {
-        alert("Error calling Hello Plugin");
-    }
+    gpscheck.isNetworkEnabled(function(result){console.log("isNetworkEnabled: ",result)}, function(err){console.log("isNetworkEnabled err: ",err)});
+### getLocation
 
-    hello.greet("World", success, failure);
-```
-
-Install iOS or Android platform
-
-    cordova platform add ios
-    cordova platform add android
-    
-Run the code
-
-    cordova run 
-
-## More Info
-
-For more information on setting up Cordova see [the documentation](http://cordova.apache.org/docs/en/latest/guide/cli/index.html)
-
-For more info on plugins see the [Plugin Development Guide](http://cordova.apache.org/docs/en/latest/guide/hybrid/plugins/index.html)
+    gpscheck.getLocation(function(result){console.log("getLocation: ",result)}, function(err){console.log("getLocation err: ",err)});
