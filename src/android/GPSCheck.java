@@ -107,15 +107,20 @@ public class GPSCheck extends CordovaPlugin {
 		return network_enabled;
     }
 
+    private  LocationManager mLocationManager;
+    private  LocationListener locationListener;
+    
     private void makeUseOfNewLocation(Location location, CallbackContext callbackContext){
     	Log.d(TAG,"makeUseOfNewLocation"+ location);
+        mLocationManager.removeUpdates(locationListener);
     	String value = String.format("[%1$.6f,%1$.6f]",location.getLatitude(),location.getLongitude());
     	callbackContext.success(value);
     }
 
+
     private void getLocation(JSONArray data, final CallbackContext callbackContext){
     	Context context = this.cordova.getActivity().getApplicationContext();
-    	LocationManager mLocationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+    	mLocationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
     	double lat = 0;
     	double lng = 0;
     	// getting GPS status
@@ -127,11 +132,10 @@ public class GPSCheck extends CordovaPlugin {
         if (!isGPSEnabled && !isNetworkEnabled) {
             // no network provider is enabled
         } else {
-        	LocationListener locationListener = new LocationListener() {
+        	locationListener = new LocationListener() {
 			    public void onLocationChanged(Location location) {
 			      // Called when a new location is found by the network location provider.
 			      makeUseOfNewLocation(location, callbackContext);
-			      mLocationManager.removeUpdates(locationListener);
 			    }
 
 			    public void onStatusChanged(String provider, int status, Bundle extras) {}
