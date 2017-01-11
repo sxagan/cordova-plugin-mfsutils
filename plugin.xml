@@ -21,9 +21,13 @@
       <feature name="Hello">
         <param name="android-package" value="com.example.plugin.Hello"/>
       </feature>
+      <feature name="GPSCheck">
+        <param name="android-package" value="com.datum.mfs.utils.GPSCheck"/>
+      </feature>
     </config-file>
 
     <source-file src="src/android/Hello.java" target-dir="src/com/example/plugin/"/>
+    <source-file src="src/android/GPSCheck.java" target-dir="src/com/datum/mfs/utils/"/>
   </platform>
 
   <platform name="ios">
@@ -38,8 +42,6 @@
     <source-file src="src/ios/HWPHello.m" target-dir="HelloPlugin"/>
   </platform>
 
-  <platform name="wp7">
-    <source-file src="src/wp7/Hello.cs"/>
-  </platform>
+  
 
 </plugin>
