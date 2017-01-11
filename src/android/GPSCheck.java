@@ -7,6 +7,9 @@ import org.json.JSONException;
 import android.location.LocationManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.log.utils;
+import android.content.Context;
+import android.os.Bundle;
 
 public class GPSCheck extends CordovaPlugin {
 
@@ -59,13 +62,13 @@ public class GPSCheck extends CordovaPlugin {
 
         } else if (action.equals("isGPSEnabled")) {
 
-            callbackContext.success(getGPSEnable());
+            callbackContext.success(String.valueOf(getGPSEnable()));
 
             return true;
 
         } else if (action.equals("isNetworkEnabled")) {
 
-            callbackContext.success(getNetworkEnable());
+            callbackContext.success(String.valueOf(getNetworkEnable()));
             return true;
 
         } else if (action.equals("getLocation")) {
@@ -108,7 +111,7 @@ public class GPSCheck extends CordovaPlugin {
     	Log.d(TAG,"makeUseOfNewLocation"+ location);
     }
 
-    private void getLocation(JSONArray data, CallbackContext callbackContext){
+    private void getLocation(JSONArray data, final CallbackContext callbackContext){
     	Context context = this.cordova.getActivity().getApplicationContext();
     	LocationManager mLocationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
     	double lat = 0;
