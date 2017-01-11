@@ -109,6 +109,8 @@ public class GPSCheck extends CordovaPlugin {
 
     private void makeUseOfNewLocation(Location location, CallbackContext callbackContext){
     	Log.d(TAG,"makeUseOfNewLocation"+ location);
+    	String value = String.format("[%1$.6f,%1$.6f]",location.getLatitude(),location.getLongitude());
+    	callbackContext.success(value);
     }
 
     private void getLocation(JSONArray data, final CallbackContext callbackContext){
@@ -129,6 +131,7 @@ public class GPSCheck extends CordovaPlugin {
 			    public void onLocationChanged(Location location) {
 			      // Called when a new location is found by the network location provider.
 			      makeUseOfNewLocation(location, callbackContext);
+			      mLocationManager.removeUpdates(locationListener);
 			    }
 
 			    public void onStatusChanged(String provider, int status, Bundle extras) {}
