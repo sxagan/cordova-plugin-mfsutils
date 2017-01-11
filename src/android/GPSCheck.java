@@ -109,7 +109,7 @@ public class GPSCheck extends CordovaPlugin {
 
     private  LocationManager mLocationManager;
     private  LocationListener locationListener;
-    
+
     private void makeUseOfNewLocation(Location location, CallbackContext callbackContext){
     	Log.d(TAG,"makeUseOfNewLocation"+ location);
         mLocationManager.removeUpdates(locationListener);
@@ -138,15 +138,23 @@ public class GPSCheck extends CordovaPlugin {
 			      makeUseOfNewLocation(location, callbackContext);
 			    }
 
-			    public void onStatusChanged(String provider, int status, Bundle extras) {}
+			    public void onStatusChanged(String provider, int status, Bundle extras) {
+			    	Log.d(TAG,String.format("locationListener=>onStatusChanged: %1 %2$d", provider, status));
+			    }
 
-			    public void onProviderEnabled(String provider) {}
+			    public void onProviderEnabled(String provider) {
+			    	Log.d(TAG,String.format("locationListener=>onProviderEnabled: %1", provider));
+			    }
 
-			    public void onProviderDisabled(String provider) {}
+			    public void onProviderDisabled(String provider) {
+			    	Log.d(TAG,String.format("locationListener=>onProviderDisabled: %1", provider));
+			    }
 			  };
 			if (isNetworkEnabled) {
+				Log.d(TAG,"requestLocationUpdates: LocationManager.NETWORK_PROVIDER");
 				mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 			} else if (isGPSEnabled) {
+				Log.d(TAG,"requestLocationUpdates: LocationManager.GPS_PROVIDER");
 				mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 			}
         }
