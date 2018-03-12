@@ -1,0 +1,30 @@
+{
+  "name": "cordova-plugin-mfsutils",
+  "version": "1.0.0",
+  "description": "Cordova MFSUtils Plugin",
+  "cordova": {
+    "id": "cordova-plugin-mfsutils",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "mfs",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "scripts": {
+  },
+  "author": "Apache Software Foundation",
+  "license": "Apache-2.0",
+  "engines": {
+    "cordovaDependencies": {
+      "3.0.0": {
+        "cordova": ">100"
+      }
+    }
+  },
+  "devDependencies": {
+  }
+}
