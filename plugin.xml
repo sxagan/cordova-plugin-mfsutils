@@ -30,7 +30,7 @@
       </feature>
     </config-file>
 
-    <source-file src="src/android/Hello.java" target-dir="src/com/example/plugin/"/>
+    <!-- <source-file src="src/android/Hello.java" target-dir="src/com/example/plugin/"/> -->
     <source-file src="src/android/GPSCheck.java" target-dir="src/com/datum/mfs/utils/"/>
   </platform>
 
