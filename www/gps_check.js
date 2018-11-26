@@ -18,6 +18,9 @@ module.exports = {
     getLocation: function (successCallback, errorCallback) {
     	console.log('run getLocation')
         cordova.exec(successCallback, errorCallback, "GPSCheck", "getLocation", []);
+    },
+    upload : function(args,success, error) {
+        cordova.exec(success, error, "GPSCheck", "upload", [args]);
     }
 
 };

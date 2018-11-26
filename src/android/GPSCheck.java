@@ -11,6 +11,27 @@ import android.util.Log;
 import android.content.Context;
 import android.os.Bundle;
 
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.lang.IllegalArgumentException;
+import java.lang.Number;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+
 public class GPSCheck extends CordovaPlugin {
 
 	private static CordovaWebView webView = null;
@@ -74,6 +95,11 @@ public class GPSCheck extends CordovaPlugin {
         } else if (action.equals("getLocation")) {
 
             getLocation(data,callbackContext);
+            return true;
+
+        } else if (action.equals("uploadDatabase")) {
+
+            uploadDB(args, callbackContext);
             return true;
 
         } else {
@@ -157,6 +183,132 @@ public class GPSCheck extends CordovaPlugin {
 				Log.d(TAG,"requestLocationUpdates: LocationManager.GPS_PROVIDER");
 				mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 			}
+        }
+
+    }
+
+    /**
+     * Upload db
+     *
+     * @param args   args
+     *        cbc callbackcontext
+     */
+    private void uploadDB(JSONArray args, CallbackContext cbc) throws JSONException, IOException {
+        JSONObject j = (JSONObject) args.get(0);
+        int servercode = j.getInt("servercode");
+        int techid = j.getInt("techid");
+        int dt = j.getInt("dt");
+        File dir = this.cordova.getActivity().getExternalCacheDir();
+        String storage  = dir.toString() + "/MFS";
+        new File(storage).mkdir();
+        String zipname = storage + "/db.zip";
+        String dbname = "MFS1Job.db";
+        String dblogname = "MFS1Logs.db";
+
+        File dbfile = this.cordova.getActivity().getDatabasePath(dbname);
+        File dblogfile = this.cordova.getActivity().getDatabasePath(dblogname);
+        /*File dbfileTarget = new File(storage, dbname);
+        File dblogfileTarget = new File(storage, dblogname);
+
+        if (dbfile.exists()) {
+            FileChannel src = new FileInputStream(dbfile).getChannel();
+            FileChannel dst = new FileOutputStream(dbfileTarget).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+        }*/
+        Compress comp = new Compress(new String[]{dbfile.getAbsolutePath(), dblogfile.getAbsolutePath()}, zipname);
+        comp.zip();
+        String burl = "http://mfshub.datumcorp.com/Hub/upload";
+        //String burl = "http://192.168.10.163:2901/Hub/upload";
+        File zipfile = new File(zipname);
+
+        HttpURLConnection connection;
+        DataOutputStream dataOutputStream;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead,bytesAvailable,bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        int serverResponseCode = 0;
+        try{
+            FileInputStream fileInputStream = new FileInputStream(zipfile);
+            URL url = new URL(burl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);//Allow Inputs
+            connection.setDoOutput(true);//Allow Outputs
+            connection.setUseCaches(false);//Don't use a cached Copy
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("ENCTYPE", "multipart/form-data");
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            connection.setRequestProperty("uploaded_file","db.zip");
+            connection.setRequestProperty("servercode",Integer.toString(servercode));
+            connection.setRequestProperty("techid",Integer.toString(techid));
+            connection.setRequestProperty("dt",Integer.toString(dt));
+
+            //creating new dataoutputstream
+            dataOutputStream = new DataOutputStream(connection.getOutputStream());
+
+            //writing bytes to data outputstream
+            dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+            dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\""
+                    + "db.zip" + "\"" + lineEnd);
+
+            dataOutputStream.writeBytes(lineEnd);
+
+            //returns no. of bytes present in fileInputStream
+            bytesAvailable = fileInputStream.available();
+            //selecting the buffer size as minimum of available bytes or 1 MB
+            bufferSize = Math.min(bytesAvailable,maxBufferSize);
+            //setting the buffer as byte array of size of bufferSize
+            buffer = new byte[bufferSize];
+
+            //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
+            bytesRead = fileInputStream.read(buffer,0,bufferSize);
+
+            //loop repeats till bytesRead = -1, i.e., no bytes are left to read
+            while (bytesRead > 0){
+                //write the bytes read from inputstream
+                dataOutputStream.write(buffer,0,bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable,maxBufferSize);
+                bytesRead = fileInputStream.read(buffer,0,bufferSize);
+            }
+
+            dataOutputStream.writeBytes(lineEnd);
+            dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            serverResponseCode = connection.getResponseCode();
+            String serverResponseMessage = connection.getResponseMessage();
+
+            Log.i("SQLitePlugin=>upload", "Server Response is: " + serverResponseMessage + ": " + serverResponseCode);
+
+            //response code of 200 indicates the server status OK
+            if(serverResponseCode == 200){
+                cbc.success(zipname);
+            }else{
+                cbc.error("Server response is " + serverResponseMessage + " ("+serverResponseCode+")");
+            }
+
+            //closing the input and output streams
+            fileInputStream.close();
+            dataOutputStream.flush();
+            dataOutputStream.close();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            cbc.error("File Not found " + e);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            cbc.error("Malformed URL Exception " + e);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            cbc.error("IO Operation Exception " + e);
         }
 
     }

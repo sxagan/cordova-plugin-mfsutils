@@ -22,9 +22,9 @@
   <platform name="android">
 
     <config-file target="res/xml/config.xml" parent="/*">
-      <feature name="Hello">
+      <!-- <feature name="Hello">
         <param name="android-package" value="com.example.plugin.Hello"/>
-      </feature>
+      </feature> -->
       <feature name="GPSCheck">
         <param name="android-package" value="com.datum.mfs.utils.GPSCheck"/>
       </feature>
