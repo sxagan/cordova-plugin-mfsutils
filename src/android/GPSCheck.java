@@ -99,7 +99,7 @@ public class GPSCheck extends CordovaPlugin {
 
         } else if (action.equals("uploadDatabase")) {
 
-            uploadDB(args, callbackContext);
+            uploadDB(data, callbackContext);
             return true;
 
         } else {

@@ -27,11 +27,13 @@
       </feature> -->
       <feature name="GPSCheck">
         <param name="android-package" value="com.datum.mfs.utils.GPSCheck"/>
+        <param name="android-package" value="com.datum.mfs.utils.Compress"/>
       </feature>
     </config-file>
 
     <!-- <source-file src="src/android/Hello.java" target-dir="src/com/example/plugin/"/> -->
     <source-file src="src/android/GPSCheck.java" target-dir="src/com/datum/mfs/utils/"/>
+    <source-file src="src/android/Compress.java" target-dir="src/com/datum/mfs/utils/"/>
   </platform>
 
   <platform name="ios">
