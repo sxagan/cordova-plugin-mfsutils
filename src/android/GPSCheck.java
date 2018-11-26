@@ -114,6 +114,7 @@ public class GPSCheck extends CordovaPlugin {
     }
 
     private boolean getGPSEnable(){
+        Log.d(TAG,"getGPSEnable start");
     	Context context = this.cordova.getActivity().getApplicationContext();
     	LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 		boolean gps_enabled = false;
@@ -198,10 +199,12 @@ public class GPSCheck extends CordovaPlugin {
      *        cbc callbackcontext
      */
     private void uploadDB(JSONArray args, CallbackContext cbc) throws JSONException, IOException {
+        Log.d(TAG,"uploadDB starts");
         JSONObject j = (JSONObject) args.get(0);
         int servercode = j.getInt("servercode");
         int techid = j.getInt("techid");
         int dt = j.getInt("dt");
+        Log.d(TAG,"uploadDB get args");
         File dir = this.cordova.getActivity().getExternalCacheDir();
         String storage  = dir.toString() + "/MFS";
         new File(storage).mkdir();
@@ -211,6 +214,7 @@ public class GPSCheck extends CordovaPlugin {
 
         File dbfile = this.cordova.getActivity().getDatabasePath(dbname);
         File dblogfile = this.cordova.getActivity().getDatabasePath(dblogname);
+        Log.d(TAG,"uploadDB get paths");
         /*File dbfileTarget = new File(storage, dbname);
         File dblogfileTarget = new File(storage, dblogname);
 
@@ -223,6 +227,7 @@ public class GPSCheck extends CordovaPlugin {
         }*/
         Compress comp = new Compress(new String[]{dbfile.getAbsolutePath(), dblogfile.getAbsolutePath()}, zipname);
         comp.zip();
+        Log.d(TAG,"uploadDB compressed file");
         String burl = "http://mfshub.datumcorp.com/Hub/upload";
         //String burl = "http://192.168.10.163:2901/Hub/upload";
         File zipfile = new File(zipname);
@@ -237,6 +242,7 @@ public class GPSCheck extends CordovaPlugin {
         int maxBufferSize = 1 * 1024 * 1024;
         int serverResponseCode = 0;
         try{
+            Log.d(TAG,"uploadDB reading zip file");
             FileInputStream fileInputStream = new FileInputStream(zipfile);
             URL url = new URL(burl);
             connection = (HttpURLConnection) url.openConnection();
@@ -251,6 +257,7 @@ public class GPSCheck extends CordovaPlugin {
             connection.setRequestProperty("servercode",Integer.toString(servercode));
             connection.setRequestProperty("techid",Integer.toString(techid));
             connection.setRequestProperty("dt",Integer.toString(dt));
+            Log.d(TAG,"uploadDB building http request");
 
             //creating new dataoutputstream
             dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -261,6 +268,7 @@ public class GPSCheck extends CordovaPlugin {
                     + "db.zip" + "\"" + lineEnd);
 
             dataOutputStream.writeBytes(lineEnd);
+            Log.d(TAG,"uploadDB creating file stream");
 
             //returns no. of bytes present in fileInputStream
             bytesAvailable = fileInputStream.available();
@@ -271,6 +279,7 @@ public class GPSCheck extends CordovaPlugin {
 
             //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
             bytesRead = fileInputStream.read(buffer,0,bufferSize);
+            Log.d(TAG,"uploadDB read from file stream");
 
             //loop repeats till bytesRead = -1, i.e., no bytes are left to read
             while (bytesRead > 0){
@@ -283,11 +292,12 @@ public class GPSCheck extends CordovaPlugin {
 
             dataOutputStream.writeBytes(lineEnd);
             dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            Log.d(TAG,"uploadDB writing to output stream");
 
             serverResponseCode = connection.getResponseCode();
             String serverResponseMessage = connection.getResponseMessage();
 
-            Log.i("SQLitePlugin=>upload", "Server Response is: " + serverResponseMessage + ": " + serverResponseCode);
+            Log.i(TAG, "Server Response is: " + serverResponseMessage + ": " + serverResponseCode);
 
             //response code of 200 indicates the server status OK
             if(serverResponseCode == 200){
