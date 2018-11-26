@@ -101,8 +101,10 @@ public class GPSCheck extends CordovaPlugin {
 
             try {
                 uploadDB(data, callbackContext);
+                callbackContext.success("success");
             } catch (IOException e) {
                 e.printStackTrace();
+                callbackContext.error("failed");
             }
             return true;
 
