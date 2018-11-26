@@ -97,7 +97,7 @@ public class GPSCheck extends CordovaPlugin {
             getLocation(data,callbackContext);
             return true;
 
-        } else if (action.equals("uploadDatabase")) {
+        } else if (action.equals("upload")) {
 
             try {
                 uploadDB(data, callbackContext);
